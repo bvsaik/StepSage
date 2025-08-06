@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+<!-- The theme the whole app will use after the splash -->
+<style name="Theme.Stepsage" parent="android:Theme.Material.Light.NoActionBar"/>
+
+<!-- A bare-bones theme for the splash activity only -->
+<style name="Theme.Stepsage.Splash" parent="android:Theme.Material.Light.NoActionBar">
+    <!-- Black status-/nav-bar so the PNG blends in -->
+    <item name="android:windowBackground">@android:color/black</item>
+</style>
+
+</resources>
