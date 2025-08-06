@@ -1,9 +1,43 @@
-# StepSage - Description
-StepSage is an on-device “talking cane” for smartphone users who are blind or have low vision. By pairing the phone’s rear camera with Google’s Gemma 3n model, the app gives real-time, room-level guidance. This solves a daily pain point: indoor navigation is still fraught with hidden chairs, half-open doors, and unmarked steps that conventional GPS or beacons can’t detect. StepSage removes the dependency on cloud connectivity, protects user privacy, and works even in poor-signal environments like basements or hospital corridors.
+# StepSage
 
-Under the hood, each camera frame is first processed locally by MediaPipe’s object detection model, which spots key indoor objects in real time. A compact JSON snapshot of that scene is then fed into the on-device Gemma 3n LLM, which turns the raw detections into a single, conversational sentence of guidance. Finally, Android’s text-to-speech engine voices the result. Because detection, language generation, and speech all run offline on the handset, StepSage preserves user privacy, works without data service, and delivers instant, context-aware navigation cues.
+*A pocket-size guide that helps visually impaired users navigate indoor spaces—no cloud, no beacons, just a phone.*
 
--> you can test the working of this application by installing the release apk under source folder in you android mobile.
+---
 
-keep in mind you will be prompted to choose a model from th
+## What it does
+StepSage looks through the rear camera, spots obstacles in real time, and speaks a short direction such as  
+> “There is a chair very close to your left.”
 
+Everything—vision, language, and speech—runs on the device, so the app works offline and never uploads a single frame.
+
+---
+
+## How it works
+1. **CameraX** streams preview frames.  
+2. **MediaPipe EfficientDet-Lite 2** finds key indoor objects.  
+3. Detections are packed into a tiny JSON snapshot.  
+4. **Gemma 3n INT4 (2 B)**, loaded with the LiteRT `LlmInference` API, rewrites the JSON as one guidance sentence.  
+5. Tokens stream to **Android TTS**, which speaks when the sentence is complete.
+
+The loop repeats each time the scene changes, usually in a couple of seconds.
+
+---
+
+## Quick start
+| Step | Action |
+|------|--------|
+| 1 | **Install** the latest `app-release.apk` from the [Releases](../../releases) page. |
+| 2 | **Download** a Gemma 3n LiteRT model (<https://www.kaggle.com/models/google/gemma-3n/>). We recommend the **2 B INT4** version for most phones. |
+| 3 | Copy the `.task` file to your phone (e.g. *Downloads*). |
+| 4 | Launch StepSage, pick the model file when prompted, and wait while the app copies it. This is a one time activity. |
+| 5 | Point the camera ahead and listen for guidance. |
+
+*No internet connection is required after these steps.*
+
+---
+
+## Build from source
+```bash
+git clone https://github.com/<your-username>/StepSage.git
+cd StepSage/android
+./gradlew installDebug   # or open with Android Studio and press Run
